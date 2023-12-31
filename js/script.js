@@ -1,138 +1,82 @@
-(function($){
-  // Search
-  var $searchWrap = $('#search-form-wrap'),
-    isSearchAnim = false,
-    searchAnimDuration = 200;
-
-  var startSearchAnim = function(){
-    isSearchAnim = true;
-  };
-
-  var stopSearchAnim = function(callback){
-    setTimeout(function(){
-      isSearchAnim = false;
-      callback && callback();
-    }, searchAnimDuration);
-  };
-
-  $('.nav-search-btn').on('click', function(){
-    if (isSearchAnim) return;
-
-    startSearchAnim();
-    $searchWrap.addClass('on');
-    stopSearchAnim(function(){
-      $('.search-form-input').focus();
-    });
-  });
-
-  $('.search-form-input').on('blur', function(){
-    startSearchAnim();
-    $searchWrap.removeClass('on');
-    stopSearchAnim();
-  });
-
-  // Share
-  $('body').on('click', function(){
-    $('.article-share-box.on').removeClass('on');
-  }).on('click', '.article-share-link', function(e){
-    e.stopPropagation();
-
-    var $this = $(this),
-      url = $this.attr('data-url'),
-      encodedUrl = encodeURIComponent(url),
-      id = 'article-share-box-' + $this.attr('data-id'),
-      title = $this.attr('data-title'),
-      offset = $this.offset();
-
-    if ($('#' + id).length){
-      var box = $('#' + id);
-
-      if (box.hasClass('on')){
-        box.removeClass('on');
-        return;
-      }
-    } else {
-      var html = [
-        '<div id="' + id + '" class="article-share-box">',
-          '<input class="article-share-input" value="' + url + '">',
-          '<div class="article-share-links">',
-            '<a href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(title) + '&url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"><span class="fa fa-twitter"></span></a>',
-            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"><span class="fa fa-facebook"></span></a>',
-            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"><span class="fa fa-pinterest"></span></a>',
-            '<a href="https://www.linkedin.com/shareArticle?mini=true&url=' + encodedUrl + '" class="article-share-linkedin" target="_blank" title="LinkedIn"><span class="fa fa-linkedin"></span></a>',
-          '</div>',
-        '</div>'
-      ].join('');
-
-      var box = $(html);
-
-      $('body').append(box);
+"use strict";
+/* Add elements listener */
+window.addEventListener("load", function () {
+    // Menubar burgers click listenr
+    var burgers = Array.prototype.slice.call(document.querySelectorAll(".navbar-burger"), 0);
+    if (burgers.length > 0) {
+        burgers.forEach(function (element) {
+            element.addEventListener("click", function () {
+                var idstr = element.getAttribute("data-target");
+                element.classList.toggle("is-active");
+                if (!idstr)
+                    return;
+                var target = document.getElementById(idstr);
+                target === null || target === void 0 ? void 0 : target.classList.toggle("is-active");
+            }, false);
+        });
     }
-
-    $('.article-share-box.on').hide();
-
-    box.css({
-      top: offset.top + 25,
-      left: offset.left
-    }).addClass('on');
-  }).on('click', '.article-share-box', function(e){
-    e.stopPropagation();
-  }).on('click', '.article-share-box-input', function(){
-    $(this).select();
-  }).on('click', '.article-share-box-link', function(e){
-    e.preventDefault();
-    e.stopPropagation();
-
-    window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
-  });
-
-  // Caption
-  $('.article-entry').each(function(i){
-    $(this).find('img').each(function(){
-      if ($(this).parent().hasClass('fancybox') || $(this).parent().is('a')) return;
-
-      var alt = this.alt;
-
-      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
-
-      $(this).wrap('<a href="' + this.src + '" data-fancybox=\"gallery\" data-caption="' + alt + '"></a>')
-    });
-
-    $(this).find('.fancybox').each(function(){
-      $(this).attr('rel', 'article' + i);
-    });
-  });
-
-  if ($.fancybox){
-    $('.fancybox').fancybox();
-  }
-
-  // Mobile nav
-  var $container = $('#container'),
-    isMobileNavAnim = false,
-    mobileNavAnimDuration = 200;
-
-  var startMobileNavAnim = function(){
-    isMobileNavAnim = true;
-  };
-
-  var stopMobileNavAnim = function(){
-    setTimeout(function(){
-      isMobileNavAnim = false;
-    }, mobileNavAnimDuration);
-  }
-
-  $('#main-nav-toggle').on('click', function(){
-    if (isMobileNavAnim) return;
-
-    startMobileNavAnim();
-    $container.toggleClass('mobile-nav-on');
-    stopMobileNavAnim();
-  });
-
-  $('#wrap').on('click', function(){
-    if (isMobileNavAnim || !$container.hasClass('mobile-nav-on')) return;
-
-    $container.removeClass('mobile-nav-on');
-  });
-})(jQuery);
+    // Add header hover page class changer
+    var colorman = function (mode) {
+        var clsname = ".auto-dark";
+        var elements = Array.prototype.slice.call(document.querySelectorAll(clsname), 0);
+        elements.forEach(function (element) {
+            if (mode === SystemDarkmodePrefrence.dark) {
+                element === null || element === void 0 ? void 0 : element.classList.add("is-dark");
+                element === null || element === void 0 ? void 0 : element.classList.remove("is-light");
+            }
+            else {
+                element === null || element === void 0 ? void 0 : element.classList.add("is-light");
+                element === null || element === void 0 ? void 0 : element.classList.remove("is-dark");
+            }
+        });
+    };
+    darklistener.add(colorman);
+    // Add logo color selector
+    var logoman = function (mode) {
+        var logo = document.getElementById("logo");
+        var darksrc = logo === null || logo === void 0 ? void 0 : logo.getAttribute("data-src-darkmode");
+        var lightsrc = logo === null || logo === void 0 ? void 0 : logo.getAttribute("data-src-lightmode");
+        if (!logo || !darksrc || !lightsrc)
+            return;
+        var src = (mode === SystemDarkmodePrefrence.dark) ? darksrc : lightsrc;
+        logo.setAttribute("src", src);
+    };
+    darklistener.add(logoman);
+});
+/* Darkmode listener */
+var SystemDarkmodePrefrence;
+(function (SystemDarkmodePrefrence) {
+    SystemDarkmodePrefrence[SystemDarkmodePrefrence["dark"] = 0] = "dark";
+    SystemDarkmodePrefrence[SystemDarkmodePrefrence["light"] = 1] = "light";
+})(SystemDarkmodePrefrence || (SystemDarkmodePrefrence = {}));
+;
+var DarkmodeListener = /** @class */ (function () {
+    function DarkmodeListener() {
+        var darking = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        this._mode = darking ? SystemDarkmodePrefrence.dark : SystemDarkmodePrefrence.light;
+        this._handlers = [];
+        this._listen();
+    }
+    DarkmodeListener.prototype._listen = function () {
+        var _this = this;
+        var media = window.matchMedia('(prefers-color-scheme: dark)');
+        var callback = function (event) {
+            var mode = event.matches ? SystemDarkmodePrefrence.dark : SystemDarkmodePrefrence.light;
+            _this._handlers.forEach(function (handler) {
+                handler(mode);
+            });
+            _this._mode = mode;
+        };
+        media.addEventListener("change", callback);
+    };
+    DarkmodeListener.prototype.add = function (callback) {
+        callback(this._mode);
+        this._handlers.push(callback);
+    };
+    DarkmodeListener.prototype.mode = function () {
+        return this._mode;
+    };
+    return DarkmodeListener;
+}());
+;
+var darklistener = new DarkmodeListener();
